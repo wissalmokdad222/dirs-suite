@@ -1,0 +1,69 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --primary: #B8860B;
+    --bg-main: #F9F7F2;
+    --text-primary: #1F1F1F;
+    --text-secondary: #5F5F5F;
+  }
+
+  body {
+    @apply bg-[#F9F7F2] text-[#1F1F1F] font-sans antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  h1, h2, h3, h4, .serif-title {
+    @apply font-serif font-medium;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-white border border-[#E5E4D2] rounded-2xl shadow-premium p-6 transition-all duration-300;
+  }
+  
+  .card-hover {
+    @apply hover:shadow-premium-lg hover:translate-y-[-4px];
+  }
+
+  .btn-primary {
+    @apply bg-primary text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 active:scale-95;
+  }
+
+  .btn-outline {
+    @apply border border-primary text-primary px-6 py-3 rounded-xl font-semibold hover:bg-primary/5 transition-all duration-200;
+  }
+
+  .nav-link {
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl text-secondary font-medium transition-all duration-200 hover:bg-black/5 hover:text-black;
+  }
+
+  .nav-link.active {
+    @apply bg-primary/10 text-primary font-bold shadow-sm;
+  }
+}
+
+/* Animations */
+.fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-[#E5E4D2] rounded-full;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-[#D5D4C2];
+}

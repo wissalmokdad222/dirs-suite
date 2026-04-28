@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DIRS Security Suite — Excellence Edition</title>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/main.css">
+    
+    <!-- External Libs -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* Modern Layout Fixes */
+        .app-layout { display: flex; min-height: 100vh; background: #F9F7F2; }
+        
+        .sidebar { 
+            width: 280px; 
+            background: #FFFFFF; 
+            border-right: 1px solid var(--border); 
+            padding: 40px 24px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 40px; 
+            position: fixed; 
+            height: 100vh; 
+            z-index: 100;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.02);
+        }
+
+        .main-content { 
+            flex: 1; 
+            margin-left: 280px; 
+            padding: 80px 100px; /* Moins condensé */
+            min-height: 100vh;
+        }
+
+        .view-section {
+            display: none;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        .nav-link { 
+            display:flex; 
+            align-items:center; 
+            gap:14px; 
+            padding:14px 18px; 
+            border-radius:var(--radius-md); 
+            color:var(--text-secondary); 
+            text-decoration:none; 
+            font-size:15px; 
+            font-weight:500; 
+            transition:all 0.25s cubic-bezier(0.4, 0, 0.2, 1); 
+            cursor:pointer; 
+            position: relative; 
+        }
+        
+        .nav-link:hover { 
+            background:var(--border-light); 
+            color:var(--text-primary); 
+            transform: translateX(5px);
+        }
+        
+        .nav-link.active { 
+            background:var(--primary-dim); 
+            color:var(--primary); 
+            font-weight:600; 
+        }
+
+        .page-header {
+            margin-bottom: 60px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .page-title {
+            font-family: var(--font-serif);
+            font-size: 48px;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .page-subtitle {
+            font-size: 16px;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        /* Stats & Analytics Special Style */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 40px;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-md);
+            height: 450px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media (max-width: 1000px) {
+            .main-content { padding: 40px 30px; margin-left: 0; }
+            .sidebar { display: none; }
+            .analytics-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-layout">
+        
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-name" style="font-size: 22px; letter-spacing: -0.5px;">DIRS Suite</div>
+                <div class="brand-subtitle" style="font-size: 10px; letter-spacing: 2px; color: var(--primary);">PLATFORME D'EXPERTISE</div>
+            </div>
+
+            <nav id="sidebar-nav" style="display: flex; flex-direction: column; gap: 6px;">
+                <a class="nav-link active" data-target="home">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a class="nav-link" data-target="threat-map">
+                    <i data-lucide="globe-2"></i>
+                    <span>Carte des Menaces</span>
+                </a>
+                <a class="nav-link" data-target="scan">
+                    <i data-lucide="shield-check"></i>
+                    <span>Audit Scanner</span>
+                </a>
+                <a class="nav-link" data-target="compliance">
+                    <i data-lucide="clipboard-check"></i>
+                    <span>Compliance Matrix</span>
+                </a>
+                <a class="nav-link" data-target="comparison">
+                    <i data-lucide="git-compare"></i>
+                    <span>Comparateur</span>
+                </a>
+                <a class="nav-link" data-target="cve">
+                    <i data-lucide="bug"></i>
+                    <span>Vulnérabilités CVE</span>
+                </a>
+                <a class="nav-link" data-target="academy">
+                    <i data-lucide="graduation-cap"></i>
+                    <span>Academy</span>
+                </a>
+            </nav>
+
+            <div style="margin-top: auto; display: flex; flex-direction: column; gap: 6px;">
+                <a class="nav-link" data-target="analytics">
+                    <i data-lucide="bar-chart-big"></i>
+                    <span>Statistiques</span>
+                </a>
+                <a class="nav-link" data-target="settings">
+                    <i data-lucide="settings-2"></i>
+                    <span>Paramètres</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+            
+            <!-- SECTION: HOME -->
+            <section id="view-home" class="view-section active">
+                <div class="page-header">
+                    <h1 class="page-title">Tableau de Bord</h1>
+                    <p class="page-subtitle">Synthèse de la santé de votre écosystème Android.</p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin-bottom: 60px;">
+                    <div class="card" style="padding: 40px; border-bottom: 5px solid var(--primary);">
+                        <div class="score-meta-label">Total Audits</div>
+                        <div id="stat-total-scans" style="font-size: 48px; font-weight: 600; margin-top: 10px;">0</div>
+                    </div>
+                    <div class="card" style="padding: 40px; border-bottom: 5px solid var(--danger);">
+                        <div class="score-meta-label" style="color: var(--danger)">Alertes Critiques</div>
+                        <div id="stat-critical" style="font-size: 48px; font-weight: 600; color: var(--danger); margin-top: 10px;">0</div>
+                    </div>
+                    <div class="card" style="padding: 40px; border-bottom: 5px solid var(--safe);">
+                        <div class="score-meta-label" style="color: var(--safe)">Score de Santé</div>
+                        <div id="stat-avg-score" style="font-size: 48px; font-weight: 600; color: var(--safe); margin-top: 10px;">--</div>
+                    </div>
+                </div>
+
+                <div class="card" style="padding: 0; overflow: hidden;">
+                    <div style="padding: 30px; border-bottom: 1px solid var(--border); background: var(--bg-primary); display: flex; justify-content: space-between; align-items: center;">
+                        <h3 class="serif-title" style="font-size: 22px;">Activités Récentes</h3>
+                        <div id="dashboard-date" style="font-family: var(--font-mono); font-size: 13px; color: var(--text-muted);">---</div>
+                    </div>
+                    <div id="scan-history-list" style="padding: 20px 40px;">
+                        <p style="padding: 60px; text-align: center; color: var(--text-muted);">Lancez un scan pour peupler votre tableau de bord.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION: THREAT MAP -->
+            <section id="view-threat-map" class="view-section">
+                <div class="page-header">
+                    <h1 class="page-title">Intelligence Territoriale</h1>
+                    <p class="page-subtitle">Surveillance mondiale des cyber-menaces mobiles en temps réel.</p>
+                </div>
+                <div class="card" style="padding: 0; overflow: hidden;">
+                    <div id="threat-map-container" class="map-container" style="height: 500px;">
+                        <i data-lucide="globe-2" style="width: 300px; height: 300px; opacity: 0.03; position: absolute;"></i>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; padding: 40px; border-top: 1px solid var(--border);">
+                        <div><div class="score-meta-label">Attaques / Min</div><div style="font-weight: 700; color: var(--danger); font-size: 24px;">1,429+</div></div>
+                        <div><div class="score-meta-label">Foyer Actif</div><div style="font-weight: 700; font-size: 24px;">Mobile Phishing</div></div>
+                        <div><div class="score-meta-label">Région Cible</div><div style="font-weight: 700; font-size: 24px;">U.E. et Asie</div></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION: SCAN -->
+            <section id="view-scan" class="view-section">
+                <div class="page-header">
+                    <h1 class="page-title">Nouvel Audit</h1>
+                    <p class="page-subtitle">Configurez et lancez une analyse d'intégrité approfondie.</p>
+                </div>
+                <div class="card" style="padding: 60px;">
+                    <div class="profile-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 60px;">
+                        <div class="profile-card" data-profile="secure"><i data-lucide="shield-check"></i><div class="profile-name">Sécurisé</div></div>
+                        <div class="profile-card" data-profile="standard"><i data-lucide="smartphone"></i><div class="profile-name">Standard</div></div>
+                        <div class="profile-card" data-profile="rooted"><i data-lucide="unlock"></i><div class="profile-name">Rooté</div></div>
+                        <div class="profile-card" data-profile="compromised"><i data-lucide="zap-off"></i><div class="profile-name">Compromis</div></div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group"><label class="form-label">Nom du Terminal</label><input type="text" id="device-name" class="form-control" placeholder="ex: Google Pixel 8 Pro"></div>
+                        <div class="form-group"><label class="form-label">Version Système</label><select id="android-version" class="form-control"><option value="14">Android 14 (U)</option><option value="13">Android 13 (T)</option></select></div>
+                        <div style="grid-column: 1/-1; margin-top: 40px; border-top: 1px solid var(--border-light); padding-top: 40px;">
+                            <div class="toggle-group"><span class="toggle-label">Bootloader Lock Status</span><label class="switch"><input type="checkbox" id="toggle-bootloader" checked><span class="slider"></span></label></div>
+                            <div class="toggle-group"><span class="toggle-label">Privilèges Root Detect</span><label class="switch"><input type="checkbox" id="toggle-root"><span class="slider"></span></label></div>
+                            <div class="toggle-group"><span class="toggle-label">Storage Encryption (FBE)</span><label class="switch"><input type="checkbox" id="toggle-encryption" checked><span class="slider"></span></label></div>
+                        </div>
+                    </div>
+                    <!-- Hidden inputs for legacy scanner support -->
+                    <input type="checkbox" id="toggle-verified-boot" checked style="display:none"><input type="month" id="security-patch" value="2024-03" style="display:none"><select id="manufacturer" style="display:none"></select><select id="wifi-security" style="display:none"></select>
+                    <button class="btn btn-primary" id="btn-run-scan" style="width: 100%; margin-top: 60px; padding: 22px; font-size: 16px;">LANCER L'AUDIT STRATÉGIQUE</button>
+                </div>
+            </section>
+
+            <!-- SECTION: COMPLIANCE -->
+            <section id="view-compliance" class="view-section">
+                <div class="page-header">
+                    <h1 class="page-title">Matrice de Conformité</h1>
+                    <p class="page-subtitle">Mapping détaillé vis-à-vis des standards NIST, OWASP et Android CDD.</p>
+                </div>
+                <div class="card" style="padding: 0; overflow: hidden;">
+                    <table class="matrix-table">
+                        <thead>
+                            <tr><th>Standard / Contrôle</th><th>Référentiel</th><th>Identité</th><th>État Actuel</th></tr>
+                        </thead>
+                        <tbody id="compliance-matrix-body">
+                            <!-- JS Inject -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- SECTION: RESULTS -->
+            <section id="view-results" class="view-section">
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 60px; border-bottom: 1px solid var(--border); padding-bottom: 30px;">
+                    <div>
+                        <span id="result-scan-id" style="font-size: 12px; text-transform: uppercase; color: var(--text-muted); letter-spacing: 3px;">AUDIT ID : —</span>
+                        <h1 class="serif-title" id="result-device-name" style="font-size: 48px; margin-top: 10px;">—</h1>
+                    </div>
+                    <button class="btn btn-primary" id="btn-view-report-res">Éditer Rapport Officiel</button>
+                </div>
+                <div class="card" style="margin-bottom: 50px; padding: 60px; text-align: center;">
+                    <div id="result-score-display" style="font-size: 120px; font-family: var(--font-serif); line-height: 1; font-weight: 500;">--</div>
+                    <div class="score-meta-label" style="margin-top: 15px;">SCORE DE SANTÉ GLOBAL</div>
+                    <div class="score-risk-badge" id="result-risk-level" style="font-size: 28px; margin-top: 15px;">—</div>
+                    <div id="result-device-label" style="font-size: 13px; color: var(--text-muted); margin-top: 15px;">—</div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 60px;">
+                    <div class="card" style="padding: 40px;"><h4 class="serif-title" style="margin-bottom: 30px; font-size: 24px;">Analyse par Vecteur</h4><div id="category-rows"></div></div>
+                    <div class="card" style="padding: 40px;"><h4 class="serif-title" style="margin-bottom: 30px; font-size: 24px;">Surface d'Exposition</h4><canvas id="radar-canvas"></canvas></div>
+                </div>
+                <div id="tab-vulns">
+                    <h3 class="serif-title" style="margin-bottom: 30px; font-size: 28px;">Observations de Sécurité</h3>
+                    <div id="vulns-list"></div>
+                </div>
+            </section>
+
+            <!-- SECTION: COMPARISON -->
+            <section id="view-comparison" class="view-section">
+                <div class="page-header">
+                    <h1 class="page-title">Comparaison d'Audits</h1>
+                    <p class="page-subtitle">Analyse différentielle entre deux états de sécurité du terminal.</p>
+                </div>
+                <div class="card" style="margin-bottom: 40px; padding: 30px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                        <div><label class="form-label">Audit Origine</label><select id="comp-select-a" class="form-control"></select></div>
+                        <div><label class="form-label">Audit Cible</label><select id="comp-select-b" class="form-control"></select></div>
+                    </div>
+                </div>
+                <div id="comparison-result" class="comparison-grid">
+                    <div style="grid-column: 1/-1; text-align: center; padding: 100px; color: var(--text-muted); font-style: italic;">
+                        Veuillez sélectionner deux audits sources pour projeter la comparaison.
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION: CVE -->
+            <section id="view-cve" class="view-section">
+                <div class="page-header">
+                    <h1 class="page-title">CVE Android Database</h1>
+                    <p class="page-subtitle">Référentiel des vulnérabilités connues et documentées.</p>
+                </div>
+                <div class="card" style="padding: 40px;">
+                    <div style="display: flex; gap: 15px; margin-bottom: 30px;">
+                        <input type="text" id="cve-search" class="form-control" placeholder="Rechercher une faille (ex: 2024)..." style="flex:1;">
+                        <select id="cve-filter" class="form-control" style="width: 250px;"><option value="all">Sévérité : Toutes</option><option value="Critical">Critique</option><option value="High">Élevé</option></select>
+                    </div>
+                    <table class="cve-table"><thead><tr><th>ID CVE</th><th>Description</th><th>Impact</th><th>Vecteur</th><th>Date</th></tr></thead><tbody id="cve-table-body"></tbody></table>
+                </div>
+            </section>
+
+            <!-- SECTION: ACADEMY -->
+            <section id="view-academy" class="view-section">
+                <div class="page-header">
+                    <h1 class="page-title">Security Academy</h1>
+                    <p class="page-subtitle">Formations techniques et bonnes pratiques en cyber-défense mobile.</p>
+                </div>
+                <div class="academy-grid" id="academy-list"></div>
+            </section>
+
+            <!-- SECTION: INBOX -->
+            <section id="view-inbox" class="view-section">
+                <div class="page-header">
+                    <h1 class="page-title">Security Inbox</h1>
+                    <p class="page-subtitle">Bulletins d'intelligence et alertes personnalisées.</p>
+                </div>
+                <div id="inbox-list" style="max-width: 800px;"></div>
+            </section>
+
+            <!-- SECTION: ANALYTICS -->
+            <section id="view-analytics" class="view-section">
+                <div class="page-header">
+                    <h1 class="page-title">Statistiques & Tendances</h1>
+                    <p class="page-subtitle">Analyse temporelle de la posture de sécurité et de l'historique d'audit.</p>
+                </div>
+                <div class="analytics-grid">
+                    <div class="chart-card">
+                        <h4 class="serif-title" style="margin-bottom: 30px; font-size: 20px;">Indice de Santé Temporel</h4>
+                        <canvas id="trend-chart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h4 class="serif-title" style="margin-bottom: 30px; font-size: 20px;">Répartition de la Conformité</h4>
+                        <canvas id="compliance-chart"></canvas>
+                    </div>
+                    <!-- Detailed Stats -->
+                    <div class="card" style="grid-column: 1 / -1; padding: 40px; margin-top: 40px;">
+                         <h4 class="serif-title" style="margin-bottom: 30px; font-size: 22px;">Métriques de Performance</h4>
+                         <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; text-align: center;">
+                             <div><div class="score-meta-label">Uptime Sécurisé</div><div style="font-size: 24px; font-weight: 700; color: var(--safe);">98.4%</div></div>
+                             <div><div class="score-meta-label">Risques Corrigés</div><div style="font-size: 24px; font-weight: 700; color: var(--primary);">24</div></div>
+                             <div><div class="score-meta-label">Vulnérabilités / Mois</div><div style="font-size: 24px; font-weight: 700; color: var(--warning);">1.2</div></div>
+                             <div><div class="score-meta-label">Intégrité Matérielle</div><div style="font-size: 24px; font-weight: 700; color: var(--safe);">Optimale</div></div>
+                         </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION: SETTINGS -->
+            <section id="view-settings" class="view-section">
+                <div class="page-header">
+                    <h1 class="page-title">Paramètres Système</h1>
+                    <p class="page-subtitle">Procédures de maintenance, export de données et configuration de la suite.</p>
+                </div>
+                <div class="card" style="padding: 60px;">
+                    <div style="margin-bottom: 60px; border-bottom: 1px solid var(--border-light); padding-bottom: 40px;">
+                        <h4 class="serif-title" style="margin-bottom: 30px; font-size: 24px;">Persistence & Portabilité</h4>
+                        <p style="color: var(--text-secondary); margin-bottom: 30px; font-size: 14px;">Utilisez ces outils pour sauvegarder ou restaurer votre historique d'audit technique.</p>
+                        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                            <button class="btn btn-primary" id="btn-export-json">Exporter l'Archive (.dirs)</button>
+                            <label class="btn btn-outline" style="cursor: pointer;">
+                                Importer une Archive 
+                                <input type="file" id="input-import-json" style="display:none">
+                            </label>
+                            <button class="btn btn-outline" id="btn-simulate-fleet" style="border-color: var(--primary);">Simuler une Flotte (Démo)</button>
+                            <button class="btn btn-outline" style="color: var(--danger); border-color: #CD5C5C; border-width: 1px;" id="btn-clear-history">Effacer la Base Locale</button>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="serif-title" style="margin-bottom: 30px; font-size: 24px;">Préférences d'Intelligence</h4>
+                        <div class="toggle-group" style="padding: 24px 0;"><span class="toggle-label">Collecte de données de menaces anonymes</span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+                        <div class="toggle-group" style="padding: 24px 0;"><span class="toggle-label">Notifications pour les nouvelles CVE Critiques</span><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+                        <div class="toggle-group" style="padding: 24px 0;"><span class="toggle-label">Interface Premium Beige Edition</span><label class="switch"><input type="checkbox" checked disabled><span class="slider"></span></label></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TECH VIEWS -->
+            <section id="view-scanning" class="view-section">
+                <div style="text-align: center; padding: 15vw 0;">
+                    <h2 class="serif-title" style="font-size: 40px; margin-bottom: 32px;">Analyse d'Intégrité Critique...</h2>
+                    <div style="height: 3px; background: var(--border-light); max-width: 500px; margin: 0 auto 32px; border-radius: 2px;">
+                        <div id="scan-progress-bar" style="height: 100%; background: var(--primary); width: 0%; border-radius: 2px; box-shadow: 0 0 15px rgba(184, 134, 11, 0.2);"></div>
+                    </div>
+                    <div id="scan-progress-pct" style="font-family: var(--font-mono); font-size: 20px; color: var(--primary); font-weight: 700;">0%</div>
+                    <p id="scan-step-message" style="margin-top: 60px; font-size: 16px; color: var(--text-secondary);"></p>
+                </div>
+            </section>
+
+            <section id="view-report" class="view-section">
+                <div class="card" style="padding: 0; overflow: hidden; height: 90vh;">
+                    <div style="display: flex; justify-content: space-between; padding: 24px 40px; border-bottom: 1px solid var(--border); background: #FFF;">
+                        <button class="btn btn-outline" id="btn-back-results">Retour</button>
+                        <button class="btn btn-gold" id="btn-print-report">Exporter Rapport PDF Officiel</button>
+                    </div>
+                    <div id="report-iframe-container" style="height: calc(100% - 85px);"></div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- MODAL: GUIDE DE REMÉDIATION -->
+    <div id="modal-remediation" class="modal-overlay">
+        <div class="modal-card">
+            <button style="position: absolute; top: 30px; right: 30px; border: none; background: transparent; cursor: pointer; color: var(--text-muted); padding: 5px;" id="btn-close-modal"><i data-lucide="x"></i></button>
+            <div id="modal-content"></div>
+            <div style="margin-top: 50px; border-top: 1px solid var(--border-light); padding-top: 32px;"><button class="btn btn-primary" id="btn-done-remediation" style="width: 100%;">VALIDER L'AUTO-RECORRECTION</button></div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div id="toast" style="position:fixed; bottom:30px; right:30px; background:white; border:1px solid var(--border); padding:18px 32px; border-radius:4px; box-shadow:var(--shadow-lg); transform:translateY(120px); opacity:0; transition:0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275); font-size:14px; z-index:9999; font-weight:500;"></div>
+
+    <!-- SCRIPTS -->
+    <script src="js/remediation.js"></script>
+    <script src="js/database.js"></script>
+    <script src="js/scanner.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/report.js"></script>
+    <script src="js/app.js"></script>
+
+</body>
+</html>

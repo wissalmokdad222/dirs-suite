@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DIRS Security Suite — Elite Edition</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+
+<div class="app-container">
+
+    <!-- ── Sidebar ──────────────────────────────────────────────── -->
+    <aside class="sidebar">
+        <div class="brand">
+            <h1 class="serif">DIRS Suite</h1>
+            <span class="tagline">Secure Ecosystem Evaluator</span>
+        </div>
+
+        <ul class="nav-menu">
+            <li><a class="nav-link active" href="#" data-target="dashboard"><i data-lucide="layout-dashboard"></i> Dashboard</a></li>
+            <li><a class="nav-link" href="#" data-target="scanner"><i data-lucide="shield-check"></i> Audit Scanner</a></li>
+            <li><a class="nav-link" href="#" data-target="compliance"><i data-lucide="clipboard-check"></i> Compliance Matrix</a></li>
+            <li><a class="nav-link" href="#" data-target="cve"><i data-lucide="bug"></i> Base CVE</a></li>
+            <li><a class="nav-link" href="#" data-target="academy"><i data-lucide="graduation-cap"></i> Academy</a></li>
+        </ul>
+
+
+    </aside>
+
+    <!-- ── Main Content ──────────────────────────────────────────── -->
+    <main class="main-content">
+
+        <!-- DASHBOARD -->
+        <section id="view-dashboard" class="view-section active">
+            <header class="view-header">
+                <div>
+                    <h2>Dashboard</h2>
+                    <p>Synthèse stratégique de la flotte Android.</p>
+                </div>
+                <button class="btn-outline" onclick="App.exportJSON()"><i data-lucide="download"></i> Export JSON</button>
+            </header>
+            <div class="stat-grid">
+                <div class="luxury-card stat-card"><div class="stat-label">Total Audits</div><div id="stat-total" class="stat-value">0</div></div>
+                <div class="luxury-card stat-card"><div class="stat-label">Risques Critiques</div><div id="stat-crit" class="stat-value" style="color:var(--risk-danger)">0</div></div>
+                <div class="luxury-card stat-card"><div class="stat-label">Score Moyen</div><div id="stat-avg" class="stat-value" style="color:var(--risk-safe)">--</div></div>
+            </div>
+            <div class="luxury-card" style="padding:0;overflow:hidden">
+                <div style="padding:28px 36px;border-bottom:1px solid var(--prestige-sand);display:flex;justify-content:space-between;align-items:center">
+                    <h3 class="serif" style="font-size:24px">Journal d'Audit</h3>
+                    <span style="font-size:10px;font-weight:700;color:var(--prestige-gold);text-transform:uppercase;letter-spacing:2px">Security Intelligence Feed</span>
+                </div>
+                <table><thead><tr><th>TERMINAL</th><th>DATE</th><th>RISQUE</th><th style="text-align:right">SCORE</th></tr></thead>
+                <tbody id="history-list"></tbody></table>
+            </div>
+        </section>
+
+        <!-- SCANNER -->
+        <section id="view-scanner" class="view-section">
+            <header class="view-header">
+                <div>
+                    <h2>Audit Scanner</h2>
+                    <p>Évaluation multidimensionnelle d'intégrité du terminal.</p>
+                </div>
+            </header>
+            <div style="max-width:760px;margin:0 auto">
+                <div class="profile-selector">
+                    <div class="profile-card active" data-profile="secure">
+                        <i data-lucide="shield"></i>
+                        <div class="label">Profil Sécurisé</div>
+                        <div class="desc">Terminal enterprise certifié</div>
+                    </div>
+                    <div class="profile-card" data-profile="risk">
+                        <i data-lucide="unlock"></i>
+                        <div class="label">Profil à Risque</div>
+                        <div class="desc">Terminal rooté ou modifié</div>
+                    </div>
+                </div>
+                <div class="luxury-card" style="border-left:5px solid var(--prestige-gold)">
+                    <div class="stat-label" style="margin-bottom:20px">Identité du Terminal</div>
+                    <input id="scan-name" class="input-field" type="text" placeholder="ex: Google Pixel 8 Pro">
+                    <div class="stat-label" style="margin-bottom:16px">Configuration de Sécurité</div>
+                    <div class="toggle-row"><span class="toggle-label">Verrouillage Bootloader</span><input id="chk-boot" type="checkbox" checked></div>
+                    <div class="toggle-row"><span class="toggle-label">Accès Root (super-user)</span><input id="chk-root" type="checkbox"></div>
+                    <div class="toggle-row"><span class="toggle-label">Chiffrement (FBE/FDE)</span><input id="chk-enc" type="checkbox" checked></div>
+                    <div class="toggle-row">
+                        <span class="toggle-label">Version Android</span>
+                        <select id="scan-ver" class="input-field" style="width:auto;margin:0;padding:10px 16px">
+                            <option value="14">Android 14</option>
+                            <option value="13">Android 13</option>
+                            <option value="12">Android 12</option>
+                            <option value="10">Android 10 (Legacy)</option>
+                        </select>
+                    </div>
+                    <button id="btn-scan" class="btn-prestige" style="width:100%;margin-top:36px;justify-content:center">
+                        <i data-lucide="zap"></i> Démarrer l'Expertise
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCANNING ANIMATION -->
+        <section id="view-scanning" class="view-section">
+            <div style="height:65vh;display:flex;align-items:center;justify-content:center">
+                <div class="luxury-card" style="width:100%;max-width:480px;text-align:center;border-top:5px solid var(--prestige-gold)">
+                    <h2 class="serif" style="font-size:36px;margin-bottom:8px">Analyse en Cours</h2>
+                    <p id="scan-msg" style="color:var(--prestige-slate);font-style:italic;margin-bottom:30px;font-size:14px">Initialisation...</p>
+                    <div class="progress-track"><div id="scan-bar" class="progress-bar"></div></div>
+                    <div id="scan-pct" style="font-weight:700;color:var(--prestige-gold);font-size:32px;margin-top:12px">0%</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RESULTS -->
+        <section id="view-results" class="view-section">
+            <header class="view-header">
+                <div>
+                    <h3 id="res-device" class="serif" style="font-size:36px;margin-bottom:8px">--</h3>
+                    <span id="res-risk" class="status-badge danger">--</span>
+                    <span id="res-id" style="font-size:11px;color:var(--prestige-slate);margin-left:16px;font-family:monospace">--</span>
+                </div>
+                <div id="res-score" class="score-display">--</div>
+            </header>
+            <div class="luxury-card">
+                <h3 class="serif" style="font-size:26px;margin-bottom:28px">Vecteurs d'Exposition Détectés</h3>
+                <div id="res-vulns"></div>
+            </div>
+            <button class="btn-prestige" data-target="scanner"><i data-lucide="rotate-ccw"></i> Nouvelle Analyse</button>
+        </section>
+
+        <!-- COMPLIANCE -->
+        <section id="view-compliance" class="view-section">
+            <header class="view-header">
+                <div>
+                    <h2>Matrice de Conformité</h2>
+                    <p>Alignement sur NIST SP 800-124, OWASP MASVS et CIS Controls.</p>
+                </div>
+            </header>
+            <div class="luxury-card" style="padding:0;overflow:hidden">
+                <div style="padding:28px 36px;border-bottom:1px solid var(--prestige-sand)">
+                    <h3 class="serif" style="font-size:22px">État de Conformité — Dernier Audit</h3>
+                </div>
+                <div id="compliance-empty" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px;gap:16px;color:var(--prestige-slate)">
+                    <i data-lucide="alert-circle" style="width:48px;height:48px;color:var(--prestige-sand)"></i>
+                    <p style="font-style:italic">Lancez un audit pour générer la matrice de conformité.</p>
+                    <a href="#" class="btn-prestige" data-target="scanner" style="font-size:11px">Aller au Scanner</a>
+                </div>
+                <table style="display:table"><thead><tr><th>STANDARD</th><th>CONTRÔLE</th><th>DESCRIPTION</th><th>STATUS</th></tr></thead>
+                <tbody id="compliance-list"></tbody></table>
+            </div>
+        </section>
+
+        <!-- CVE -->
+        <section id="view-cve" class="view-section">
+            <header class="view-header">
+                <div>
+                    <h2>Explorateur CVE</h2>
+                    <p>Base d'intelligence en vulnérabilités Android (AOSP).</p>
+                </div>
+            </header>
+            <div class="luxury-card">
+                <input id="cve-search" class="input-field" type="text" placeholder="Rechercher (ex: 2024, Runtime, Critical...)">
+                <table><thead><tr><th>ID</th><th>COMPOSANT</th><th>DESCRIPTION</th><th>SEVERITY</th><th style="text-align:right">CVSS</th></tr></thead>
+                <tbody id="cve-list"></tbody></table>
+            </div>
+        </section>
+
+        <!-- ACADEMY -->
+        <section id="view-academy" class="view-section">
+            <header class="view-header">
+                <div>
+                    <h2>DIRS Academy</h2>
+                    <p>Doctrine technique sur la sécurisation des terminaux Android.</p>
+                </div>
+            </header>
+            <div id="academy-grid" class="academy-grid"></div>
+        </section>
+
+    </main>
+</div>
+
+<!-- Modal -->
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <div id="modal-close-btn" class="modal-close"><i data-lucide="x"></i></div>
+        <div id="modal-body"></div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script src="./js/engine.js"></script>
+<script src="./js/app.js"></script>
+</body>
+</html>
