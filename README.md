@@ -4,15 +4,15 @@
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Platform](https://img.shields.io/badge/platform-Android-green)
 
-**DIRS (Device Integrity Risk Scorer)** is a high-end, professional security evaluation platform designed to assess and quantify Android device integrity risks using advanced MCDM (Multi-Criteria Decision Making) methodologies.
+**DIRS (Device Integrity Risk Scorer)** est une plateforme d'évaluation de sécurité avancée conçue pour auditer et quantifier l'**Identité du Terminal** et les risques d'intégrité Android à l'aide de méthodologies MCDM.
 
-##  Features
+## ✨ Caractéristiques
 
-- **Advanced Risk Evaluation**: Leverages AHP and TOPSIS methodologies for precise security scoring.
-- **Elite UI/UX**: Features a "Beige Prestige" design system for a premium professional experience.
-- **Comprehensive Analysis**: Evaluates system integrity, permission states, and biometric security.
-- **Interactive Dashboards**: Real-time visualization of security metrics and risk vectors.
-- **Academic Foundation**: Built upon rigorous mathematical models for risk assessment.
+- **Évaluation de l'Identité du Terminal** : Audit complet de la posture de sécurité physique et logicielle de l'appareil.
+- **Moteur AHP-TOPSIS** : Utilise le Processus de Hiérarchie Analytique et TOPSIS pour un scoring mathématiquement rigoureux.
+- **47 Indicateurs d'Intégrité** : Analyse granulaire du bootloader, accès root, sécurité réseau, chiffrement et runtime.
+- **Elite UI/UX** : Système de design "Beige Prestige" pour une expérience professionnelle premium.
+- **Rapports Stratégiques** : Génération de scores de proximité à la solution idéale de sécurité.
 
 ##  Tech Stack
 
