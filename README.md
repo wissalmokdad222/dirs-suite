@@ -6,7 +6,7 @@
 
 **DIRS (Device Integrity Risk Scorer)** est une plateforme d'évaluation de sécurité avancée conçue pour auditer et quantifier l'**Identité du Terminal** et les risques d'intégrité Android à l'aide de méthodologies MCDM.
 
-## ✨ Caractéristiques
+##  Caractéristiques
 
 - **Évaluation de l'Identité du Terminal** : Audit complet de la posture de sécurité physique et logicielle de l'appareil.
 - **Moteur AHP-TOPSIS** : Utilise le Processus de Hiérarchie Analytique et TOPSIS pour un scoring mathématiquement rigoureux.
